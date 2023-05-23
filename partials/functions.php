@@ -5,27 +5,8 @@ $passwordLength = $_GET["password_length"];
 $numbersInput = $_GET["numbers"];
 $lettersInput = $_GET["letters"];
 $symbolsInput = $_GET["symbols"];
-$repeatYes = $_GET["repeat_yes"];
-$repeatNo = $_GET["repeat_no"];
+$repeat = $_GET["repeat"];
 
-
-function repetition($repeatInputNo, $repeatInputYes, $value, $array, $function){
-
-    if(isset($repeatInputNo)){
-
-        if(!in_array($value, $array)){
-            $array[] = $value;
-
-        }else{
-            $array[] = $function;
-        }
-
-    }else{
-        $array[] = $value;
-    };
-
-    return $array;
-};
 
 $arrayRandom = [];
 
@@ -34,16 +15,15 @@ $symbols = [
 ];
 
 //riempio l'array inizialmente vuoto con lettere e numeri casuali, in base a cosa sceglie l'utente
-for($i = 0; $i < 20; $i++){
+for($i = 0; $i < 15; $i++){
 
-    $numero = rand(1, 9);
+    $numero = rand(0, 9);
     $maiuscola = chr(64+rand(1,26));
     $minuscola = strtolower(chr(64+rand(1,26)));
 
     if(isset($numbersInput)){
 
-        $arrayRandom = repetition($repeatNo, $repeatYes, $numero, $arrayRandom, rand(1, 9));
-        // $arrayRandom[] = $numero;
+        $arrayRandom[] = $numero;
 
     }
     if(isset($lettersInput)){
@@ -58,15 +38,28 @@ for($i = 0; $i < 20; $i++){
 
 };
 
+
 $array2 = [];
 
 //creo un secondo array che contiene elementi random del primo array. Questo array è lungo quanto sceglie l'utente
-for($i = 0; $i < $passwordLength; $i++){
-    $array2[] = $arrayRandom[rand(1, 20)];
-};
 
-var_dump($array2);
-var_dump($arrayRandom);
+if($repeat == "no"){
+        
+    while (count($array2) < $passwordLength) {
+        $randomElement = $arrayRandom[rand(0, count($arrayRandom) - 1)];
+
+        if (!in_array($randomElement, $array2)) {
+            $array2[] = $randomElement;
+        }
+    };
+
+}elseif($repeat == "si"){
+
+    while (count($array2) < $passwordLength) {
+        $array2[] = $arrayRandom[rand(0, count($arrayRandom) - 1)];
+
+    };
+};
 
 //trasformo il secondo array in una stringa: la password generata
 $stringPassword = implode('', $array2);
